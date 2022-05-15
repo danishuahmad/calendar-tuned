@@ -1,0 +1,5 @@
+# backup files
+*.js.bak
+
+#   IDE specific settings
+.vscode/*

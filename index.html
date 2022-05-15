@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Tuned</title>
+		<link rel="stylesheet" href="css/style.css" />
+
+		<script src="https://unpkg.com/konva@8.3.4/konva.min.js"></script>
+		<script src="https://unpkg.com/interactjs/dist/interact.min.js"></script>
+		<meta charset="utf-8" />
+	</head>
+
+	<body>
+		<!-- Availability Section -->
+		<section class="weekly-availability">
+
+			<div class="gradient-tabs">
+				<div class="back-icon" onclick="test()">
+					<a href="#"><i class="fa-solid fa-chevron-left"></i></a>
+				</div>
+				<div>
+					<p>
+						Cool. Now select the time frames you'll be available each weekend.
+						Don't worry, you can make changes to specific days later.
+					</p>
+				</div>
+			</div>
+
+			<div class="warpper">
+				<input class="radio" id="one" name="group" type="radio" checked />
+				<input class="radio" id="two" name="group" type="radio" />
+				<input class="radio" id="three" name="group" type="radio" />
+				<input class="radio" id="four" name="group" type="radio" />
+				<input class="radio" id="five" name="group" type="radio" />
+
+				<div class="tabs">
+					<label class="tab" id="one-tab" for="one">Mon</label>
+					<label class="tab" id="two-tab" for="two">Tue</label>
+					<label class="tab" id="three-tab" for="three">Wed</label>
+					<label class="tab" id="four-tab" for="four">Thu</label>
+					<label class="tab" id="five-tab" for="five">Fri</label>
+				</div>
+
+				<div class="panels">
+
+
+					<div class="panel" id="one-pane">
+					</div>
+					<div class="panel">
+						<button onclick="handleClick()" class="btn btn-green">Save My Weekly Availability</button>
+					</div>
+
+					Tue Schedule
+				</div>
+			</div>
+		</section>
+	</body>
+	<script src="./constants.js"></script>
+	<script src="./render.js"></script>
+	<script src="./events.js"></script>
+	<script src="./utils.js"></script>
+	<script src="./index.js"></script>
+
+	<script src="https://kit.fontawesome.com/622cf70c9d.js"></script>
+
+</html>
