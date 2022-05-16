@@ -136,6 +136,21 @@ function removeOverlaps(idNumber) {
 	const currentSlotBoxHeight = parseFloat(currentSlot.style.height);
 	const currentEndingAt = ((currentSlotBoxHeight / SLOT_BOX_HEGHT)-1)+idNumber
 
+	//	check if any slot overlapping next
+	for( let i=idNumber+1; i<=currentEndingAt; i++ ){
+		const nextNeighbour = document.querySelectorAll(`[${SLOT_BOX_ATTR}='${i}']`)[0];
+		if( nextNeighbour ){
+			const nextNeighbourHeight = parseFloat(nextNeighbour.style.height);
+			const nextEndingAt = ((nextNeighbourHeight / SLOT_BOX_HEGHT)-1)+i
+
+			if( nextEndingAt <= currentEndingAt ){
+				removeSlotBox(nextNeighbour);
+			}else{
+				currentSlot.style.height = (((nextEndingAt-idNumber)+1)*SLOT_BOX_HEGHT)+"px";
+				removeSlotBox(nextNeighbour);
+			}
+		}
+	}
 
 	//	get previous overlap
 	if( idNumber > 0 ){
@@ -144,18 +159,15 @@ function removeOverlaps(idNumber) {
 		let index = idNumber-1;
 		while(!noMorePreviousNeighours){
 			const previousNeighbour = document.querySelectorAll(`[${SLOT_BOX_ATTR}='${index}']`)[0];
-		console.log({previousNeighbour, index})
 
 			if( previousNeighbour ){
 				const previousSlotBoxHeight = parseFloat(previousNeighbour.style.height);
 				const previousSlotBoxEndingAt = ((previousSlotBoxHeight / SLOT_BOX_HEGHT)-1)+index
-				console.log({previousSlotBoxEndingAt, currentEndingAt})
 				if( previousSlotBoxEndingAt > currentEndingAt ){
 					//	previous ending after current => REMOVE CURRENT
 					removeSlotBox(currentSlot);
 					return;
 				}else if( idNumber <= previousSlotBoxEndingAt ){	//	overlap
-					console.log((((currentEndingAt-index)+1)*SLOT_BOX_HEGHT)+"px")
 					previousNeighbour.style.height = (((currentEndingAt-index)+1)*SLOT_BOX_HEGHT)+"px";
 					removeSlotBox(currentSlot);
 					return;
@@ -172,8 +184,6 @@ function removeOverlaps(idNumber) {
 			
 		}
 	}
-
-	
 
 }
 function getTranslateXValue(translateString) {
