@@ -4,6 +4,7 @@ function onSlotClick(index) {
 	if (document.querySelectorAll(`[${SLOT_BOX_ATTR}='${index}']`).length) {
 		return
 	}
+	//	check immediate previous neighbour
 	for (let i = 0; i < index; i++) {
 		
 		const existingSlotBox = document.querySelectorAll(`[${SLOT_BOX_ATTR}='${i}']`)[0]
@@ -30,6 +31,7 @@ function onSlotClick(index) {
 		}
 	}
 
+
 	const clickedElement = document.getElementById("slot-" + index)
 	const borderLineElement = document.getElementById("border-line-" + index)
 
@@ -43,7 +45,15 @@ function onSlotClick(index) {
 	newElement.setAttribute(SLOT_BOX_ATTR, index);
 
 	newElement.style.width = lineDimensionsData.width + "px";
-	newElement.style.height = SLOT_BOX_HEGHT + "px";
+	//	check if next neightbour exists
+	const nextNeighbour = document.querySelectorAll(`[${SLOT_BOX_ATTR}='${index+1}']`)[0]
+	if( nextNeighbour ){
+		const nextSlotBoxHeight = parseFloat(nextNeighbour.style.height);
+		newElement.style.height = SLOT_BOX_HEGHT+nextSlotBoxHeight+"px";
+		removeSlotBox(nextNeighbour);
+	}else{
+		newElement.style.height = SLOT_BOX_HEGHT + "px";
+	}
 	newElement.style.top = slotOffsetData.y + "px";
 	newElement.style.left = lineOffsetData.x + "px";
 	//  add handle (dots) in border line
@@ -51,5 +61,7 @@ function onSlotClick(index) {
   <div id="handle-bottom-${index}" class="slot-box-handle handle-bottom"></div></div>`
 
 	clickedElement.append(newElement);
+
+	
 
 }

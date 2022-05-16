@@ -95,7 +95,6 @@ const interactable = interact('.resizable-slot-box').draggable({
 interactable.on(['resizeend', 'dragend'], showEventInfo)
 
 async function showEventInfo(event) {
-	console.log(event.type)
 
 	if( event.type === 'dragend' ){
 		position.y = 0
@@ -106,9 +105,12 @@ async function showEventInfo(event) {
 
 	const TOTAL_SLOTS = document.getElementsByClassName("slot").length
 
-	// 	reassign ids
-	reAssignIds(event)
-	
-	// 	merge neighbouring slots
-	//mergeSlots(TOTAL_SLOTS, SLOT_BOX_HEGHT)
+	const newId = reAssignIds(event)
+	if( !isNaN(newId) ){ 
+		// 	reassign ids
+		mergeSlots(newId) 
+
+		// 	remvoe and merge overlapping slots
+		removeOverlaps(newId)
+	}
 }

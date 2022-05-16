@@ -43,8 +43,6 @@ function getOuterHtml(node) {
     return html;
 }
 function reAssignIds(event) {
-	let { x, y } = event.target.dataset
-	//console.log("EVENT CALLED", x, y)
 	//	recalculate slot box id
 	let repositionY = getTranslateYValue(event.target.style.transform)
 	if( isNaN(repositionY) ){
@@ -55,12 +53,11 @@ function reAssignIds(event) {
 
 	//	check if no change in id number
 	if( newIdNumber === oldIdNumber ){
-		return
+		return oldIdNumber
 	}
 
 	//	check if another slot already exists
 	const existingSlotBox = document.querySelectorAll(`[${SLOT_BOX_ATTR}='${newIdNumber}']`)[0]
-	//console.log(event,existingSlotBox,repositionY)
 
 	if( existingSlotBox ){
 		const existingSlotBoxHeight = parseInt(existingSlotBox.style.height)
@@ -72,7 +69,6 @@ function reAssignIds(event) {
 			return;
 		}
 	}
-	console.log({newIdNumber, repositionY, oldIdNumber});
 
 	//	move to its designated new slot
 	const clone = event.target.cloneNode(true);
@@ -86,148 +82,99 @@ function reAssignIds(event) {
 	const parent = document.getElementById(`slot-${newIdNumber}`);
 	parent.appendChild(clone);
 
-	return
+	return newIdNumber
+}
+function mergeSlots(idNumber) {
+	
+	idNumber = Number(idNumber)
 
-	for (let i = 0; i < totalSlots; i++) {
+	//	get current slot
+	const currentSlot = document.querySelectorAll(`[${SLOT_BOX_ATTR}='${idNumber}']`)[0];
+	const currentSlotBoxHeight = parseFloat(currentSlot.style.height);
 
-		const indexedSlotBox = document.querySelectorAll(`[${SLOT_BOX_ATTR}='${i}']`)[0]
-		console.log({indexedSlotBox})
-		if (indexedSlotBox) {
+	//	get next neighbour
+	const nextNeighbour = document.querySelectorAll(`[${SLOT_BOX_ATTR}='${idNumber+((currentSlotBoxHeight/SLOT_BOX_HEGHT))}']`)[0];
+	if( nextNeighbour ){
+		const nextSlotBoxHeight = parseFloat(nextNeighbour.style.height);
+		currentSlot.style.height = currentSlotBoxHeight+nextSlotBoxHeight+"px";
+		removeSlotBox(nextNeighbour);
+	}
 
-			let repositionY = getTranslateYValue(indexedSlotBox.style.transform)
-			if (isNaN(repositionY)) {
-				repositionY = 0
-			}
-			//	get indexed slotbox metadata
-			const newIdNumber = i + (repositionY / slotBoxHeight);
-			console.log({i,newIdNumber, repositionY})
-			if(i>0) return
-			const indexedSlotBoxHeight = parseInt(indexedSlotBox.style.height);
-			const newEndingIndexedSlotBox = (newIdNumber-1) + (indexedSlotBoxHeight/slotBoxHeight);
-			const currentSlotNumber = indexedSlotBox.getAttribute(SLOT_BOX_ATTR)
+	//	get previous neighbour
+	if( idNumber > 0 ){
 
-			if( newIdNumber != currentSlotNumber ){
-				const clone = indexedSlotBox.cloneNode(true);
-				clone.setAttribute(SLOT_BOX_ATTR, newIdNumber);
-				clone.id = "slot-box-" + newIdNumber;
-				console.log({top: parseInt(clone.style.top), repositionY, gesamt: parseInt(clone.style.top)+repositionY })
-				clone.style.top = parseInt(clone.style.top)+repositionY+"px";
-				console.log(clone.style.top)
-				clone.style.transform = null;
-				removeSlotBox(indexedSlotBox);
-
-				const parent = document.getElementById(`slot-${newIdNumber}`);
-
-				//	check if another slotbox is overlapping
-				for (let j = newIdNumber; j <= newEndingIndexedSlotBox; j+=1) {
-					const existingSlotBox = document.querySelectorAll(`[${SLOT_BOX_ATTR}='${j}']`)[0];
-					if (existingSlotBox) {
-						//	get existing slotbox starting and ending point
-						const existingSlotBoxHeight = parseInt(existingSlotBox.style.height)
-						const existingSlotBoxEndingOn = (j + (existingSlotBoxHeight/slotBoxHeight));
-
-						if( newEndingIndexedSlotBox < existingSlotBoxEndingOn ){
-							clone.style.height = (((existingSlotBoxEndingOn) - newIdNumber) * slotBoxHeight) + "px"
-						}
-						removeSlotBox(existingSlotBox);
-						break;
-					}
+		let noMorePreviousNeighours = false;
+		let index = idNumber-1;
+		while(!noMorePreviousNeighours){
+			const previousNeighbour = document.querySelectorAll(`[${SLOT_BOX_ATTR}='${index}']`)[0];
+			if( previousNeighbour ){
+				const previousSlotBoxHeight = parseFloat(previousNeighbour.style.height);
+				if( (previousSlotBoxHeight / SLOT_BOX_HEGHT)+index === idNumber ){
+					//	previous ending just before current => MERGE
+					previousNeighbour.style.height = previousSlotBoxHeight+currentSlotBoxHeight+"px";
+					removeSlotBox(currentSlot);
+				}else{	//	there is a gap between previous and current => STOP
+					noMorePreviousNeighours = true;
 				}
-				parent.appendChild(clone);
+			}else{
+				index--;
 			}
-			break;
-			//	check all slots from new position to old if another slot box exists
-			// let allSlotsChecked = false;
-			// let slotNumberToCheck = newIdNumber;
-			// while( !allSlotsChecked ){
-			// 	const existingSlotBox = document.getElementById("slot-box-" + newIdNumber);	
-			// 	if( existingSlotBox && newIdNumber !== i ){
-			// 		console.log({newIdNumber})
-			// 		const indexedSlotBoxHeight = parseInt(indexedSlotBox.style.height)
-			// 		const existingSlotBoxHeight = parseInt(existingSlotBox.style.height)
 
-			// 		//	check if the first slot
-			// 		if( slotNumberToCheck === newIdNumber ){
-			// 			//	keep the bigger one and delete the other one
-			// 			if( existingSlotBoxHeight > indexedSlotBoxHeight ){
-			// 				removeSlotBox(indexedSlotBox);
-			// 				break;
-			// 			}else{
-			// 				removeSlotBox(existingSlotBox);
-			// 				indexedSlotBox.id = "slot-box-"+newIdNumber;
-			// 				break;
-			// 			}
-			// 		}else if( slotNumberToCheck > newIdNumber ) {
-
-			// 			const newEndingIndexedSlotBox = newIdNumber + indexedSlotBoxHeight
-
-			// 			const existingSlotBoxStartingFrom = parseInt(existingSlotBox.id)
-			// 			const existingSlotBoxEndingOn = parseInt(existingSlotBox.id)
-
-			// 			//	overlapping with the next one
-			// 			if( (newEndingIndexedSlotBox > existingSlotBoxStartingFrom) && (newEndingIndexedSlotBox < existingSlotBoxEndingOn ) ){
-			// 				console.log("DANIsh")
-
-			// 				//  merge
-			// 				indexedSlotBox.style.height = ((existingSlotBoxEndingOn - newIdNumber) * slotBoxHeight) + "px"
-			// 				indexedSlotBox.id = "slot-box-"+newIdNumber;
-			// 				removeSlotBox(existingSlotBox)
-			// 			}
-
-			// 			// const existingSlotBoxEndingSlotNumber = slotNumberToCheck + (existingSlotBox.style.height / slotBoxHeight);
-			// 			// const indexedSlotBoxEndingSlotNumber = newIdNumber + (existingSlotBox.style.height / slotBoxHeight);
-			// 			// if( existingSlotBoxEndingSlotNumber > indexedSlotBoxEndingSlotNumber ){
-			// 			// 	indexedSlotBox.style.height = ((existingSlotBoxEndingSlotNumber - newIdNumber) * slotBoxHeight) + "px";
-			// 			// }
-			// 			// console.log({existingSlotBox})
-			// 			// removeSlotBox(existingSlotBox);
-			// 		}else {
-			// 			const indexedSlotBoxEndingSlotNumber = newIdNumber + (existingSlotBox.style.height / slotBoxHeight);
-			// 			const existingSlotBoxEndingSlotNumber = slotNumberToCheck + (existingSlotBox.style.height / slotBoxHeight);
-			// 			if( indexedSlotBoxEndingSlotNumber > existingSlotBoxEndingSlotNumber ){
-			// 				existingSlotBox.style.height = ((indexedSlotBoxEndingSlotNumber - slotNumberToCheck) * slotBoxHeight) + "px";
-			// 			}
-			// 			console.log({indexedSlotBox})
-			// 			removeSlotBox(indexedSlotBox);
-			// 		}					
-
-			// 	}
-			// 	if( slotNumberToCheck === i ){
-			// 		allSlotsChecked = true
-			// 	}else if( slotNumberToCheck > i ){
-			// 		slotNumberToCheck--; 
-			// 	}else{
-			// 		slotNumberToCheck++;
-			// 	}
-			// 	console.log({slotNumberToCheck, currentIdNumber: i, allSlotsChecked})
-
-			// }
-
+			if( index < 0 ){	//	end of slots
+				noMorePreviousNeighours = true;
+			}
+			
 		}
 
+		
 	}
 }
-function mergeSlots(totalSlots, slotBoxHeight) {
-	for (let i = 0; i < totalSlots; i++) {
-		const indexedSlotBox = document.getElementById("slot-box-" + i)
-		if (indexedSlotBox) {
-			//  get height
-			const indexedSlotBoxHeight = parseFloat(indexedSlotBox.style.height)
-			//  get neighbouring slot number
-			const nextSlotNumber = i + (indexedSlotBoxHeight / slotBoxHeight)
+function removeOverlaps(idNumber) {
+	
+	//	get current slot
+	const currentSlot = document.querySelectorAll(`[${SLOT_BOX_ATTR}='${idNumber}']`)[0];
+	const currentSlotBoxHeight = parseFloat(currentSlot.style.height);
+	const currentEndingAt = ((currentSlotBoxHeight / SLOT_BOX_HEGHT)-1)+idNumber
 
-			//  check if there is something on the next slot 
-			const nextSlotBox = document.getElementById("slot-box-" + nextSlotNumber)
-			if (nextSlotBox) {
-				//  get height
-				const nextSlotBoxHeight = parseFloat(nextSlotBox.style.height)
 
-				//  merge
-				indexedSlotBox.style.height = (indexedSlotBoxHeight + nextSlotBoxHeight) + "px"
-				removeSlotBox(nextSlotBox)
+	//	get previous overlap
+	if( idNumber > 0 ){
+
+		let noMorePreviousNeighours = false;
+		let index = idNumber-1;
+		while(!noMorePreviousNeighours){
+			const previousNeighbour = document.querySelectorAll(`[${SLOT_BOX_ATTR}='${index}']`)[0];
+		console.log({previousNeighbour, index})
+
+			if( previousNeighbour ){
+				const previousSlotBoxHeight = parseFloat(previousNeighbour.style.height);
+				const previousSlotBoxEndingAt = ((previousSlotBoxHeight / SLOT_BOX_HEGHT)-1)+index
+				console.log({previousSlotBoxEndingAt, currentEndingAt})
+				if( previousSlotBoxEndingAt > currentEndingAt ){
+					//	previous ending after current => REMOVE CURRENT
+					removeSlotBox(currentSlot);
+					return;
+				}else if( idNumber <= previousSlotBoxEndingAt ){	//	overlap
+					console.log((((currentEndingAt-index)+1)*SLOT_BOX_HEGHT)+"px")
+					previousNeighbour.style.height = (((currentEndingAt-index)+1)*SLOT_BOX_HEGHT)+"px";
+					removeSlotBox(currentSlot);
+					return;
+				}else{	//	there is a gap between previous and current => STOP
+					noMorePreviousNeighours = true;
+				}
+			}else{
+				index--;
 			}
+
+			if( index < 0 ){	//	end of slots
+				noMorePreviousNeighours = true;
+			}
+			
 		}
 	}
+
+	
+
 }
 function getTranslateXValue(translateString) {
 
