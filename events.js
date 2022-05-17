@@ -61,7 +61,18 @@ function onSlotClick(index) {
   <div id="handle-bottom-${index}" class="slot-box-handle handle-bottom"></div></div>`
 
 	clickedElement.append(newElement);
+}
 
-	
+function onSaveClick() {
+	const slotBoxes = document.getElementsByClassName('resizable-slot-box');
 
+	const hours = []
+
+	for( let i=0; i<slotBoxes.length; i++ ){
+		const slotBox = slotBoxes[i];
+		const fromHour = Number(slotBox.getAttribute(SLOT_BOX_ATTR));
+		const toHour = ((parseFloat(slotBox.style.height)/SLOT_BOX_HEGHT)-1)+fromHour;
+		hours.push({fromHour, toHour});
+	}
+	console.log(hours)
 }
