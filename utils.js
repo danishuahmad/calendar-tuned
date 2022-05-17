@@ -209,3 +209,22 @@ function removeSlotBox(target) {
 	interact(target).unset()
 	target.remove()
 }
+function focusDay(dayNumber){
+	const days = document.getElementsByClassName('day-tab-label');
+
+	for( let i=0; i<days.length; i++ ){
+		console.log("SA")
+		const day = days[i];	
+		Object.assign(day.style, {
+			"border": "none",
+			"border-radius": "none"
+		})
+	}
+
+	const focusDay = document.getElementById("day-"+dayNumber);
+	Object.assign(focusDay.style, {
+		"border": "1px solid #1DC3A7",
+		"border-radius": "6px"
+	})
+
+}

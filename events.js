@@ -1,4 +1,11 @@
+function onDayClick(dayNumber){
+	focusDay(dayNumber);
+}
+
 function initialRender(){
+
+	focusDay(0);
+
 	const slots = [{fromHour: 0, toHour: 2}, {fromHour: 5, toHour: 10}, {fromHour: 12, toHour: 16}, {fromHour: 18, toHour: 23}];
 	
 	for( let i=0; i<slots.length; i++ ){
