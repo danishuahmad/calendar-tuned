@@ -11,6 +11,23 @@ function getOffset(el) {
 		x: _x,
 	};
 }
+function getCoords(elem) { // crossbrowser version
+    var box = elem.getBoundingClientRect();
+
+    var body = document.body;
+    var docEl = document.documentElement;
+
+    var scrollTop = window.pageYOffset || docEl.scrollTop || body.scrollTop;
+    var scrollLeft = window.pageXOffset || docEl.scrollLeft || body.scrollLeft;
+
+    var clientTop = docEl.clientTop || body.clientTop || 0;
+    var clientLeft = docEl.clientLeft || body.clientLeft || 0;
+
+    var top  = box.top +  scrollTop - clientTop;
+    var left = box.left + scrollLeft - clientLeft;
+
+    return { top: Math.round(top), left: Math.round(left) };
+}
 function getDimensions(element) {
 	let width, height = 0;
 	if (element) {
@@ -81,7 +98,6 @@ function reAssignIds(event) {
 	removeSlotBox(event.target);
 	const parent = document.getElementById(`slot-${newIdNumber}`);
 	parent.appendChild(clone);
-
 	return newIdNumber
 }
 function mergeSlots(idNumber) {
@@ -130,9 +146,9 @@ function mergeSlots(idNumber) {
 	}
 }
 function removeOverlaps(idNumber) {
-	
 	//	get current slot
 	const currentSlot = document.querySelectorAll(`[${SLOT_BOX_ATTR}='${idNumber}']`)[0];
+	if( !currentSlot ) return;
 	const currentSlotBoxHeight = parseFloat(currentSlot.style.height);
 	const currentEndingAt = ((currentSlotBoxHeight / SLOT_BOX_HEGHT)-1)+idNumber
 
@@ -213,7 +229,6 @@ function focusDay(dayNumber){
 	const days = document.getElementsByClassName('day-tab-label');
 
 	for( let i=0; i<days.length; i++ ){
-		console.log("SA")
 		const day = days[i];	
 		Object.assign(day.style, {
 			"border": "none",

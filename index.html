@@ -23,8 +23,7 @@
 				</div>
 				<div>
 					<p>
-						Cool. Now select the time frames you'll be available each weekend.
-						Don't worry, you can make changes to specific days later.
+						Cool. Now select the time frames you'll be available each weekend. Don't worry, you can make changes to specific days later.
 					</p>
 				</div>
 			</div>
@@ -49,11 +48,10 @@
 
 					<div class="panel" id="one-pane">
 					</div>
-					<div class="panel">
-						<button onclick="onSaveClick()" class="btn btn-green">Save My Weekly Availability</button>
+					<div class="fixed-pannel">
+						<button onclick="nextClick()" class="btn btn-green ">Save My Weekly Availability</button>
 					</div>
-
-					Tue Schedule
+					<div style="height:65px; width:100%; clear:both;"></div>
 				</div>
 			</div>
 		</section>
@@ -66,8 +64,23 @@
 
 	<script src="https://kit.fontawesome.com/622cf70c9d.js"></script>
 	<script>
-		document.addEventListener('DOMContentLoaded', function(){ 
+		function docReady(fn) {
+			// see if DOM is already available
+			if (document.readyState === "complete" || document.readyState === "interactive") {
+				// call on next available tick
+				setTimeout(fn, 1);
+			} else {
+				document.addEventListener("DOMContentLoaded", fn);
+			}
+		}   
+
+		docReady(function() {
+			// DOM is loaded and ready for manipulation here
 			initialRender();
+		});
+
+		document.addEventListener('DOMContentLoaded', function(){ 
+			//initialRender();
     		// your code goes here
 		}, false);
 	</script>

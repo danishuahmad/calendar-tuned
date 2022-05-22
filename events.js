@@ -1,14 +1,27 @@
-function onDayClick(dayNumber){
+function onDayClick(dayNumber) {
 	focusDay(dayNumber);
+	const args = [dayNumber, 2, ['name', 'waqas',]];
+	window.flutter_inappwebview.callHandler('daySelected', ...args).then(function (result) {
+		console.log(result['result']);
+
+	});
 }
 
-function initialRender(){
+function nextClick() {
+	window.flutter_inappwebview.callHandler('NextButtonPress');
+}
+
+function test() {
+	window.flutter_inappwebview.callHandler('backButtonPress')
+}
+
+function initialRender() {
 
 	focusDay(0);
 
-	const slots = [{fromHour: 0, toHour: 2}, {fromHour: 5, toHour: 10}, {fromHour: 12, toHour: 16}, {fromHour: 18, toHour: 23}];
-	
-	for( let i=0; i<slots.length; i++ ){
+	const slots = [{ fromHour: 0, toHour: 2 }, { fromHour: 5, toHour: 10 }, { fromHour: 12, toHour: 16 }, { fromHour: 18, toHour: 23 }];
+
+	for (let i = 0; i < slots.length; i++) {
 		const slot = slots[i];
 
 		const clickedElement = document.getElementById("slot-" + slot.fromHour);
@@ -18,19 +31,21 @@ function initialRender(){
 		const lineOffsetData = getOffset(borderLineElement)
 		const lineDimensionsData = getDimensions(borderLineElement)
 
+		console.log({lineOffsetData})
+
 		const newElement = document.createElement('div');
 		newElement.setAttribute("id", "slot-box-" + slot.fromHour);
 		newElement.setAttribute("class", "resizable-slot-box");
 		newElement.setAttribute(SLOT_BOX_ATTR, slot.fromHour);
-	
+
 		newElement.style.width = lineDimensionsData.width + "px";
 		newElement.style.top = slotOffsetData.y + "px";
 		newElement.style.left = lineOffsetData.x + "px";
-		newElement.style.height = ((slot.toHour - slot.fromHour)*SLOT_BOX_HEGHT)+"px";
+		newElement.style.height = ((slot.toHour - slot.fromHour) * SLOT_BOX_HEGHT) + "px";
 		//  add handle (dots) in border line
 		newElement.innerHTML = `<div class="handle-container"><div id="handle-top-${slot.fromHour}" class="slot-box-handle handle-top"></div>
 	  <div id="handle-bottom-${slot.fromHour}" class="slot-box-handle handle-bottom"></div></div>`
-	
+
 		clickedElement.append(newElement);
 
 	}
@@ -43,7 +58,7 @@ function onSlotClick(index) {
 	}
 	//	check immediate previous neighbour
 	for (let i = 0; i < index; i++) {
-		
+
 		const existingSlotBox = document.querySelectorAll(`[${SLOT_BOX_ATTR}='${i}']`)[0]
 		if (existingSlotBox) {
 			//  get height
@@ -52,7 +67,7 @@ function onSlotClick(index) {
 			if (nextSlotNumber === index) {
 
 				//  check if sandwich merge
-				const nextToNextSlotBox = document.querySelectorAll(`[${SLOT_BOX_ATTR}='${index+1}']`)[0]
+				const nextToNextSlotBox = document.querySelectorAll(`[${SLOT_BOX_ATTR}='${index + 1}']`)[0]
 				if (nextToNextSlotBox) {
 					//  sandwich merge
 					const nextToNextSlotBoxHeight = parseFloat(nextToNextSlotBox.style.height)
@@ -76,6 +91,8 @@ function onSlotClick(index) {
 	const lineOffsetData = getOffset(borderLineElement)
 	const lineDimensionsData = getDimensions(borderLineElement)
 
+	console.log({lineOffsetData})
+
 	const newElement = document.createElement('div');
 	newElement.setAttribute("id", "slot-box-" + index);
 	newElement.setAttribute("class", "resizable-slot-box");
@@ -83,12 +100,12 @@ function onSlotClick(index) {
 
 	newElement.style.width = lineDimensionsData.width + "px";
 	//	check if next neightbour exists
-	const nextNeighbour = document.querySelectorAll(`[${SLOT_BOX_ATTR}='${index+1}']`)[0]
-	if( nextNeighbour ){
+	const nextNeighbour = document.querySelectorAll(`[${SLOT_BOX_ATTR}='${index + 1}']`)[0]
+	if (nextNeighbour) {
 		const nextSlotBoxHeight = parseFloat(nextNeighbour.style.height);
-		newElement.style.height = SLOT_BOX_HEGHT+nextSlotBoxHeight+"px";
+		newElement.style.height = SLOT_BOX_HEGHT + nextSlotBoxHeight + "px";
 		removeSlotBox(nextNeighbour);
-	}else{
+	} else {
 		newElement.style.height = SLOT_BOX_HEGHT + "px";
 	}
 	newElement.style.top = slotOffsetData.y + "px";
@@ -105,11 +122,11 @@ function onSaveClick() {
 
 	const hours = []
 
-	for( let i=0; i<slotBoxes.length; i++ ){
+	for (let i = 0; i < slotBoxes.length; i++) {
 		const slotBox = slotBoxes[i];
 		const fromHour = Number(slotBox.getAttribute(SLOT_BOX_ATTR));
-		const toHour = ((parseFloat(slotBox.style.height)/SLOT_BOX_HEGHT)-1)+fromHour;
-		hours.push({fromHour, toHour});
+		const toHour = ((parseFloat(slotBox.style.height) / SLOT_BOX_HEGHT) - 1) + fromHour;
+		hours.push({ fromHour, toHour });
 	}
 	console.log(hours)
 }

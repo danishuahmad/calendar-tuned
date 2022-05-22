@@ -20,7 +20,7 @@
 }
 
 body {
-     background-color: #f0f0f0;
+    background-color: #f0f0f0;
     line-height: 1.5;
     font-family: 'rubrik-regular';
 }
@@ -66,6 +66,19 @@ body {
     margin: 20px 0 40px 0;
 }
 
+.fixed-pannel {
+    position: fixed;
+    bottom: 0px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100% !important;
+    background-color: #181C1F;
+    z-index: 99;
+    border: 1px solid #181C1F !important;
+    overflow: hidden;
+    padding-bottom: 20px;
+}
+
 .btn.btn-green {
     color: #181C1F;
     background: #1DC3A7;
@@ -77,15 +90,20 @@ body {
     font-size: 17px;
     text-transform: uppercase;
     border: 2px solid transparent;
-    transition: all .3s ease; 
+    transition: all .3s ease;
     font-family: 'rubrik-medium';
+    width: 80% !important;
+    margin: 0 auto !important;
+
+
+
 }
 
-.btn.btn-green:hover {
+/* .btn.btn-green:hover {
     background: transparent;
     color: #1DC3A7;
     border-color: #1DC3A7;
-}
+} */
 
 /* #container{
     position: absolute;
@@ -98,12 +116,24 @@ body {
    Weekly Availability
 ====================================== */
 .weekly-availability {
-    background: linear-gradient( rgba(29, 195, 167, .9) 3%, rgb(24, 28, 31) 28%);
+    background: linear-gradient(rgba(29, 195, 167, .9) 3%, rgb(24, 28, 31) 12%);
 }
 
-.weekly-availability .gradient-tabs {
-    padding: 60px 20px 40px 20px;
-    display: flex;
+
+
+@media only screen and (max-width: 400px) {
+    .weekly-availability .gradient-tabs {
+        padding: 60px 20px 40px 20px;
+        display: flex;
+        height: 225px;
+    }
+}
+@media only screen and (min-width: 401px) {
+    .weekly-availability .gradient-tabs {
+        padding: 60px 20px 40px 20px;
+        display: flex;
+        height: 180px;
+    }
 }
 
 .weekly-availability .gradient-tabs .back-icon i {
@@ -115,19 +145,19 @@ body {
 }
 
 .weekly-availability .gradient-tabs p {
-    font-family: 'rubrik-medium';
-    font-size: 17px;
+    font-family: 'rubrik-meduim';
+    font-size: 20px;
     color: #ffffff;
-    margin-top: 5px;
+    margin-top: 3px;
 }
 
-.weekly-availability .warpper{
-    display:flex;
+.weekly-availability .warpper {
+    display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.weekly-availability .tab{
+.weekly-availability .tab {
     color: #E4E4E4;
     cursor: pointer;
     font-size: 20px;
@@ -137,39 +167,43 @@ body {
     display: inline-block;
     font-family: 'rubrik-normal';
 }
-.panel .btn{
+
+.panel .btn {
     width: 100%;
     margin-top: 50px;
 }
-.weekly-availability .panels{
-    min-height:200px;
-    width:100%;
+
+.weekly-availability .panels {
+    min-height: 200px;
+    width: 100%;
     /* max-width:500px; */
-    border-radius:3px;
-    overflow:hidden;
-    padding:20px;  
+    border-radius: 3px;
+    overflow: hidden;
+    padding: 20px;
 }
 
-.weekly-availability .panel{
+.weekly-availability .panel {
     animation: fadein .8s;
 }
 
-.weekly-availability .panel-title{
+.weekly-availability .panel-title {
     font-size: 13px;
     display: flex;
     align-items: flex-end;
     height: 55px;
     justify-content: space-between;
 }
-.panel-title .border-line{
+
+.panel-title .border-line {
+    display: block;
     flex: 0.8;
     border-bottom: 1px solid white;
     position: relative;
 }
 
 
-.weekly-availability .radio{
-    display:none;
+.weekly-availability .radio {
+    display: none;
 }
 
 /* .weekly-availability #one:checked ~ .panels #one-panel,
@@ -194,14 +228,20 @@ body {
 } */
 
 @keyframes fadein {
-    from { opacity:0; }
-    to { opacity:1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 @media screen and (min-width: 768px) {
     .schedule-popup .modal-popup .btn-green {
         display: inline-block;
         padding: 12px 60px;
+
     }
 }
 
@@ -209,6 +249,7 @@ body {
     .weekly-availability .tab {
         font-size: 14px;
     }
+
     .btn.btn-green {
         font-size: 16px;
     }
@@ -218,7 +259,7 @@ body {
 
 /* here is usman css */
 
-.wrap {
+/* .wrap {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -226,8 +267,8 @@ body {
     height: 100vh;
     position: relative;
     z-index: 2;
-   
-}
+
+} */
 
 /* .wrap div {
     box-shadow: 2px 2px 6px -2px rgba(0,0,0,0.75);
@@ -237,7 +278,7 @@ body {
 
 .resizable-slot-box {
     position: absolute;
-    background-color: rgb(29, 195, 167,0.2);
+    background-color: rgb(29, 195, 167, 0.2);
     color: white;
     font-size: 20px;
     font-family: sans-serif;
@@ -248,17 +289,20 @@ body {
     border: 2px solid rgb(29, 195, 167);
     border-radius: 1px;
 }
-.handle-container{
+
+.handle-container {
     width: 100%;
     height: 100%;
     position: relative;
     overflow: visible;
 }
+
 .resizable-slot-box {
     overflow: visible;
     transition: all 0.5s ease;
 }
-.slot-box-handle{
+
+.slot-box-handle {
     position: absolute;
     width: 15px;
     height: 15px;
@@ -267,6 +311,7 @@ body {
     border: 2px solid #1DC3A7;
     z-index: 4;
 }
+
 .slot-box-handle:before {
     content: '';
     height: 30px;
@@ -279,11 +324,13 @@ body {
     background: transparent;
     transform: translate(-50%, -50%);
 }
-.handle-top{
+
+.handle-top {
     top: -10px;
     left: 27px;
 }
-.handle-bottom{
+
+.handle-bottom {
     bottom: -7px;
     right: 27px;
 }
